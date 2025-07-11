@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinemar - Compra tu Boleto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #b80000;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #1e1e1e;
+      padding: 1rem 0;
+      gap: 2rem;
+    }
+    nav a {
+      padding: 0.5rem 1.5rem;
+      background-color: #ff3366;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+ 
+    }
+    nav a:nth-child(2) {
+      background-color: #007acc;
+    }
+    nav a:hover {
+      background-color: #cc0044;
+    }
+    section {
+      padding: 2rem;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 1rem;
+    }
+    .gallery {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .card {
+      background-color: #1c1c1c;
+      border: 2px solid #b80000;
+      border-radius: 10px;
+      width: 200px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    }
+    .card.selected {
+      border: 2px solid #fff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    .card img {
+      width: 100%;
+      border-radius: 10px 10px 0 0;
+    }
+    .card p {
+      margin: 0.5rem;
+      font-weight: bold;
+      color: #f2c94c;
+    }
+    .card span {
+      display: block;
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background-color: #ff0066;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #cc0044;
+    }
+    .boleta {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 1, 26, 0.484);
+      display: inline-block;
+      color: #fff;
+      text-align: left;
+    }
+    .producto-boleta, .pelicula-boleta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 0.5rem 0;
+    }
+    .producto-boleta img, .pelicula-boleta img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>✨​CINEMARK✨​</header>
+  <nav>
+    <a href="index.html">Compra tu Boleto</a>
+    <a href="encuesta.html">Encuesta</a>
+  </nav>
+
+  <section>
+    <h2>🎬 Elige tu película</h2>
+    <div class="gallery" id="peliculas">
+      <div class="card" onclick="seleccionar(this, 'pelicula')">
+        <img src="lilo.jpg" alt="Lilo y stitch">
+        <p>Lilo y stitch</p>
+        <span>● Seleccionar</span>
+      </div>
+      <div class="card" onclick="seleccionar(this, 'pelicula')">
+        <img src="destino.jpeg" alt="Destino Final">
+        <p>Destino Final</p>
+        <span>● Seleccionar</span>
+      </div>
+      <div class="card" onclick="seleccionar(this, 'pelicula')">
+        <img src="superman.jpg" alt="Superman">
+        <p>Superman</p>
+        <span>● Seleccionar</span>
+      </div>
+    </div>
+
+    <h2>🍿 Agrega productos</h2>
+    <div class="gallery" id="productos">
+      <div class="card" onclick="seleccionar(this, 'producto')">
+        <img src="cancha.jpeg" alt="Cancha Clásica">
+        <p>Cancha Clásica</p>
+        <span>☐ Agregar</span>
+      </div>
+      <div class="card" onclick="seleccionar(this, 'producto')">
+        <img src="palomera.jpg" alt="Palomera Superman">
+        <p>Palomera Superman</p>
+        <span>☐ Agregar</span>
+      </div>
+      <div class="card" onclick="seleccionar(this, 'producto')">
+        <img src="canchadulce.png" alt="Canchadulce">
+        <p>Cancha dulce</p>
+        <span>☐ Agregar</span>
+      </div>
+    </div>
+
+    <button onclick="confirmarCompra()">Confirmar Compra</button>
+    <div class="boleta" id="boleta"></div>
+    <br>
+    <button onclick="nuevaCompra()">Realizar Nueva Compra</button>
+  </section>
+
+  <script>
+    let seleccion = {
+      pelicula: null,
+      productos: [],
+      imagenPelicula: null
+    };
+
+    const imagenesProductos = {
+      "Cancha Clásica": "cancha.jpeg",
+      "Palomera Superman": "palomera.jpg",
+      "Canchadulce": "canchadulce.png"
+    };
+
+    const imagenesPeliculas = {
+      "Lilo y stitch": "lilo.jpg",
+      "Destino Final": "destino.jpeg",
+      "Superman": "Superman.jpg"
+    };
+
+    function seleccionar(elemento, tipo) {
+      if (tipo === 'pelicula') {
+        document.querySelectorAll('#peliculas .card').forEach(c => c.classList.remove('selected'));
+        elemento.classList.add('selected');
+        seleccion.pelicula = elemento.querySelector('p').innerText.trim();
+        seleccion.imagenPelicula = elemento.querySelector('img').src;
+      } else {
+        const nombreProducto = elemento.querySelector('p').innerText.trim();
+        if (elemento.classList.contains('selected')) {
+          elemento.classList.remove('selected');
+          seleccion.productos = seleccion.productos.filter(p => p !== nombreProducto);
+        } else {
+          elemento.classList.add('selected');
+          seleccion.productos.push(nombreProducto);
+        }
+      }
+    }
+
+    function confirmarCompra() {
+      const boleta = document.getElementById('boleta');
+      if (!seleccion.pelicula) {
+        boleta.innerHTML = '<p>Por favor, selecciona una película.</p>';
+        return;
+      }
+      let productosHTML = seleccion.productos.map(prod => `
+        <div class="producto-boleta">
+          <img src="${imagenesProductos[prod]}" alt="${prod}">
+          <span>${prod}</span>
+        </div>
+      `).join('');
+
+      let peliculaHTML = `
+        <div class="pelicula-boleta">
+          <img src="${seleccion.imagenPelicula}" alt="${seleccion.pelicula}">
+          <span>${seleccion.pelicula}</span>
+        </div>
+      `;
+
+      boleta.innerHTML = `
+        <h3>🎟️ Boleta</h3>
+        <p><strong>Película:</strong></p>
+        ${peliculaHTML}
+        <p><strong>Productos:</strong></p>
+        ${productosHTML || '<p>Ninguno</p>'}
+      `;
+    }
+
+    function nuevaCompra() {
+      seleccion = { pelicula: null, productos: [], imagenPelicula: null };
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('boleta').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
